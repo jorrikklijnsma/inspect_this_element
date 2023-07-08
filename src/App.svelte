@@ -1,4 +1,43 @@
 <script lang="ts">
+  // Define a type for previousSize object
+  let previousSize: {width: number, height: number} = {width: window.innerWidth, height: window.innerHeight};
+
+  // Set a threshold value for size difference
+  const sizeThreshold: number = .2;
+
+  // Flag to track if the inspector is probably open
+  let probablyInspectorOpen: boolean = false;
+
+  /**
+   * Resize event handler
+   */
+  function resize() {
+    /**
+     * Check if the size difference exceeds the threshold
+     * @param {number} oldValue - The previous value
+     * @param {number} newValue - The new value
+     * @returns {boolean} - Returns true if the size difference exceeds the threshold, otherwise false
+     */
+
+    // Get the new window width and height
+    const newWindowWidth: number = window.innerWidth;
+    const newWindowHeight: number = window.innerHeight;
+
+    const widthResized = Math.abs(newWindowWidth - previousSize.width) > previousSize.width * sizeThreshold;
+    const heightResized = Math.abs(newWindowHeight - previousSize.height) > previousSize.height * sizeThreshold;
+
+    if (widthResized || heightResized) {
+      probablyInspectorOpen = true;
+    }
+
+    // Update the previous window size
+    previousSize.height = window.innerHeight;
+    previousSize.width = window.innerWidth;
+  }
+
+  // Attach the resize event handler to the window
+  window.onresize = resize;
+
   // Get the root element
   const rootElement: HTMLElement = document.querySelector("body");
 
@@ -66,7 +105,7 @@
   }, 20000);
 </script>
 
-<h1>Inspect element me!</h1>
+<h1>{probablyInspectorOpen ? "Look at my style!" : "Inspect element me!"} </h1>
 
 <style>
   h1 {
